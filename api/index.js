@@ -18,15 +18,15 @@ app.post('/api/login', (req, res) => {
 
 		if (user) {
 			const accessToken = jwt.sign(
-				{
-					username: user.username,
-					isAdmin: user.isAdmin,
-				},
-				'e905a340-14dc-411f-aee6-182bc4231ad0',
+				{ id: user.id, isAdmin: user.isAdmin },
+				'mySecretKey',
 			);
-			res
-				.status(200)
-				.json({ username: user.username, isAdmin: user.isAdmin, accessToken });
+			res.status(200).json({
+				userId: user.id,
+				username: user.username,
+				isAdmin: user.isAdmin,
+				accessToken,
+			});
 		} else {
 			res.status(401).json('Username or password is incorrect.');
 		}
@@ -40,11 +40,10 @@ const verify = (req, res, next) => {
 	if (authHeader) {
 		const token = authHeader.split(' ')[1];
 
-		jwt.verify(token, 'e905a340-14dc-411f-aee6-182bc4231ad0', (err, user) => {
+		jwt.verify(token, 'mySecretKey', (err, user) => {
 			if (err) {
 				return res.status(403).json('Token is not valid!');
 			}
-
 			req.user = user;
 			next();
 		});
@@ -53,45 +52,13 @@ const verify = (req, res, next) => {
 	}
 };
 
-app.delete('/api/users/:userId', verify, (req, res, next) => {
+app.delete('/api/users/:userId', verify, (req, res) => {
 	if (req.user.id === req.params.userId || req.user.isAdmin) {
-		res.status(200).json('The user has been deleted.');
+		res.status(200).json('User has been deleted.');
 	} else {
-		res.status(401).status('You are not authorized to delete this user.');
+		res.status(403).json('You are not allowed to delete this user!');
 	}
-	console.log(error);
 });
-
 app.listen(5002, () => {
 	console.log(`Backend server is running.`);
 });
-
-// app.post('/api/login', (req, res) => {
-// 	const { username, password } = req.body;
-// 	const user = users.find((u) => {
-// 		return u.username === username && u.password === password;
-// 	});
-// 	if (user) {
-// 		const accessToken = jwt.sign(
-// 			{
-// 				username: user.username,
-// 				isAdmin: user.isAdmin,
-// 			},
-// 			'mySecretKey',
-// 		);
-
-// 		res
-// 			.status(200)
-// 			.json({ username: user.username, isAdmin: user.isAdmin, accessToken });
-// 	} else {
-// 		res.status(400).json('Username or Password is incorrect.');
-// 	}
-// });
-
-// app.delete('/api/users/:userId', verify, (req, res) => {
-// 	if (req.user.id === req.params.userId || req.user.isAdmin) {
-// 		res.status(200).json('User has been deleted.');
-// 	} else {
-// 		res.status(403).json('You are not allowed to delete this user!');
-// 	}
-// });
