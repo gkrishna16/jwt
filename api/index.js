@@ -9,6 +9,34 @@ const users = [
 	{ id: '2', username: 'jane', password: 'Jane0908', isAdmin: false },
 ];
 
+let refreshTokens = [];
+
+app.post('api/refresh', (req, res) => {
+	// Take the refresh token from the user.
+	const refreshToken = req.body.token;
+	// if the token is not available
+	if (!refreshToken) res.status(401).json('You are not authenticated.');
+	if (!refreshTokens.includes(refreshToken)) res.status().json();
+
+	// if everything is okay, create new access token, refresh token and send to user.
+});
+
+const generateAccessToken = (user) => {
+	return jwt.sign({ id: user.id, isAdmin: user.isAdmin }, 'mySecretKey', {
+		expiresIn: '15m',
+	});
+};
+
+const generateRefreshToken = (user) => {
+	return jwt.sign(
+		{ id: user.id, isAdmin: user.isAdmin },
+		'myRefreshSecretKey',
+		{
+			expiresIn: '15m',
+		},
+	);
+};
+
 app.post('/api/login', (req, res) => {
 	const { username, password } = req.body;
 	try {
@@ -17,10 +45,11 @@ app.post('/api/login', (req, res) => {
 		});
 
 		if (user) {
-			const accessToken = jwt.sign(
-				{ id: user.id, isAdmin: user.isAdmin },
-				'mySecretKey',
-			);
+			const accessToken = generateAccessToken(user);
+			const refreshToken = generateRefreshToken(user);
+
+			refreshTokens.push(refreshToken);
+
 			res.status(200).json({
 				userId: user.id,
 				username: user.username,
