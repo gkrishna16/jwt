@@ -1,0 +1,33 @@
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{
+   "username": "jane", "password": "Jane0908"
+}
+
+###
+DELETE http://localhost:3000/api/delete/:userId
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNjQzNTI2OTI5fQ.ol6sBTwpAHYyWn-J0UdsJLVR1-slaLufRxl1nTV5FFu
+
+Content-Type: application/json
+
+{
+    "userId":"2"
+}
+
+###
+POST http://localhost:3000/api/refresh
+Content-Type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNjQzNTI4NzcxfQ.ILt4dDHsR1iBS4040-l-X7mN-HPbS-uZL0_crWTa6xM"
+}
+
+###
+POST http://localhost:3000/api/logout
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNjQzNTI4OTI3fQ.hXuxKi1-pF4nXiSQDsq9KQIVH9mTulo05C6LpbAJH2s
+Content-Type: application/json
+
+{
+    "token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNjQzNTI4OTI3fQ.nFFJ3i86_fcb_ejsNi_1Lr-s06nUaCowkas_gaovKFg"
+}
